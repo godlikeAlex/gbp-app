@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Input, Layout, Button, Text, Icon } from "@ui-kitten/components";
+import localization from "../services/localization";
 
 const styles = StyleSheet.create({
   container: {
@@ -29,14 +30,14 @@ export default () => {
     <Layout style={styles.container}>
       <Layout style={{ width: "100%" }}>
         <Input
-          label="Email"
-          placeholder="Ваш email адресс"
+          label={localization.t("authorization.email")}
+          placeholder={localization.t("authorization.formEmailPlaceholder")}
           value={inputData.email}
           onChangeText={(value) => handleChange("email", value)}
           style={styles.marginInput}
         />
         <Input
-          label="Пароль"
+          label={localization.t("authorization.password")}
           placeholder="********"
           value={inputData.password}
           onChangeText={(value) => handleChange("password", value)}
@@ -44,10 +45,11 @@ export default () => {
           style={styles.marginInput}
         />
         <Button status="primary" style={styles.marginInput}>
-          Войти
+          {localization.t("authorization.signIn")}
         </Button>
         <Text style={[styles.marginInput, styles.infoRegister]} category="h6">
-          Нет аккаунта? Регистрация
+          {localization.t("authorization.login.hint")}
+          {localization.t("authorization.signUp")}
         </Text>
       </Layout>
     </Layout>
