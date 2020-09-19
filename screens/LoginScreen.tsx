@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import localization from "../services/localization";
 import * as actions from "../redux/actions";
 import { signIn } from "../core/api";
+import Loading from "../src/components/Loading";
 
 const styles = StyleSheet.create({
   container: {
@@ -40,6 +41,7 @@ const LoginScreen = ({ login, user }: LoginProps) => {
   const [inputData, setInputData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name: string, value: string) => {
     setInputData({ ...inputData, [name]: value });
@@ -47,9 +49,11 @@ const LoginScreen = ({ login, user }: LoginProps) => {
 
   const handleSignIn = async () => {
     setDisabled(true);
+    setLoading(true);
     if (!inputData.email || !inputData.password) {
       setError(localization.t("authorization.errors.empty"));
       setDisabled(false);
+      setLoading(false);
       return;
     }
     try {
@@ -59,64 +63,70 @@ const LoginScreen = ({ login, user }: LoginProps) => {
       });
       if (data.err) {
         setDisabled(false);
+        setLoading(false);
         return setError(data.err);
       }
       AsyncStorage.setItem("auth", JSON.stringify(data)).then(() => {
         login(data);
+        setLoading(false);
         navigation.navigate("Home");
       });
     } catch (error) {
       setDisabled(false);
+      setLoading(false);
       setError(error);
     }
   };
 
   return (
-    <Layout style={styles.container}>
-      <Layout style={{ width: "100%" }}>
-        <Text category="h2" style={{ fontFamily: "SFProText-Semibold" }}>
-          {localization.t("authorization.signInTitle")}
-        </Text>
-        <Input
-          label={localization.t("authorization.email")}
-          placeholder={localization.t("authorization.formEmailPlaceholder")}
-          value={inputData.email}
-          onChangeText={(value) => handleChange("email", value)}
-          style={styles.marginInput}
-        />
-        <Input
-          label={localization.t("authorization.password")}
-          placeholder="********"
-          value={inputData.password}
-          onChangeText={(value) => handleChange("password", value)}
-          secureTextEntry={true}
-          style={styles.marginInput}
-        />
-        <Text style={{ color: "red" }} status="danger">
-          {error && error}
-        </Text>
-        <Button
-          status="primary"
-          style={styles.marginInput}
-          onPress={handleSignIn}
-          disabled={disabled}
-        >
-          {localization.t("authorization.signIn")}
-        </Button>
-        <Layout style={[styles.marginInput]}>
-          <Text style={styles.infoRegister} category="h6">
-            {localization.t("authorization.login.hint")}
+    <>
+      {loading && <Loading />}
+      <Layout style={styles.container}>
+        <Layout style={{ width: "100%" }}>
+          <Text category="h2" style={{ fontFamily: "SFProText-Semibold" }}>
+            {localization.t("authorization.signInTitle")}
           </Text>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("SignUp")}
+          <Input
+            label={localization.t("authorization.email")}
+            placeholder={localization.t("authorization.formEmailPlaceholder")}
+            value={inputData.email}
+            onChangeText={(value) => handleChange("email", value)}
+            style={styles.marginInput}
+          />
+          <Input
+            label={localization.t("authorization.password")}
+            placeholder="********"
+            value={inputData.password}
+            onChangeText={(value) => handleChange("password", value)}
+            secureTextEntry={true}
+            style={styles.marginInput}
+          />
+          <Text style={{ color: "red" }} status="danger">
+            {error && error}
+          </Text>
+          <Button
+            status="primary"
+            style={styles.marginInput}
+            onPress={handleSignIn}
+            disabled={disabled}
           >
-            <Text style={styles.signUp} category="h6" status="primary">
-              {localization.t("authorization.signUp")}
+            {localization.t("authorization.signIn")}
+          </Button>
+          <Layout style={[styles.marginInput]}>
+            <Text style={styles.infoRegister} category="h6">
+              {localization.t("authorization.login.hint")}
             </Text>
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("SignUp")}
+            >
+              <Text style={styles.signUp} category="h6" status="primary">
+                {localization.t("authorization.signUp")}
+              </Text>
+            </TouchableWithoutFeedback>
+          </Layout>
         </Layout>
       </Layout>
-    </Layout>
+    </>
   );
 };
 

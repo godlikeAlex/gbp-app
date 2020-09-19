@@ -5,18 +5,18 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { Input, Layout, Button, Text, Icon } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import localization from "../services/localization";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as actions from "../redux/actions";
 import { signUp } from "../core/api";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import Loading from "../src/components/Loading";
+import StyleGuide from "../src/components/StyleGuide";
+import TopBar from "../src/components/TopBar";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: StyleGuide.spacing,
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 10,
   },
   marginInput: {
     marginTop: 10,
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const [inputData, setInputData] = useState({
     name: "",
     account_name: "",
@@ -47,6 +48,7 @@ const SignUpScreen = () => {
 
   const handleSignIn = async () => {
     setDisabled(true);
+    setLoading(true);
 
     if (
       !inputData.email ||
@@ -55,6 +57,7 @@ const SignUpScreen = () => {
       !inputData.name
     ) {
       setError(localization.t("authorization.errors.empty"));
+      setLoading(false);
       setDisabled(false);
       return;
     }
@@ -65,6 +68,7 @@ const SignUpScreen = () => {
       });
       if (data.err) {
         setDisabled(false);
+        setLoading(false);
         return setError(data.err);
       }
 
@@ -73,71 +77,77 @@ const SignUpScreen = () => {
         token: data.token,
       });
       setDisabled(false);
+      setLoading(false);
     } catch (error) {
       setDisabled(false);
+      setLoading(false);
       setError(error);
     }
   };
 
   return (
-    <Layout style={styles.container}>
-      <Layout style={{ width: "100%" }}>
-        <Text category="h2" style={{ fontFamily: "SFProText-Semibold" }}>
-          {localization.t("authorization.signUpTitle")}
-        </Text>
-        <Input
-          label={localization.t("authorization.name")}
-          placeholder={localization.t("authorization.formNamePlaceholder")}
-          value={inputData.name}
-          onChangeText={(value) => handleChange("name", value)}
-          style={styles.marginInput}
-        />
-        <Input
-          label={localization.t("authorization.account_name")}
-          placeholder={localization.t(
-            "authorization.formAcountNamePlaceholder"
-          )}
-          value={inputData.account_name}
-          onChangeText={(value) => handleChange("account_name", value)}
-          style={styles.marginInput}
-        />
-        <Input
-          label={localization.t("authorization.email")}
-          placeholder={localization.t("authorization.formEmailPlaceholder")}
-          value={inputData.email}
-          onChangeText={(value) => handleChange("email", value)}
-          style={styles.marginInput}
-        />
-        <Input
-          label={localization.t("authorization.password")}
-          placeholder="********"
-          value={inputData.password}
-          onChangeText={(value) => handleChange("password", value)}
-          secureTextEntry={true}
-          style={styles.marginInput}
-        />
-        <Text style={{ color: "red" }} status="danger">
-          {error && error}
-        </Text>
-        <Button
-          status="primary"
-          style={styles.marginInput}
-          onPress={handleSignIn}
-          disabled={disabled}
-        >
-          {localization.t("authorization.signUp")}
-        </Button>
-        <Layout style={[styles.marginInput]}>
-          <Text style={styles.infoRegister} category="h6">
-            {localization.t("authorization.createAccount.hint")}
+    <Layout style={{ flex: 1 }}>
+      {loading && <Loading />}
+      <TopBar />
+      <Layout style={styles.container}>
+        <Layout style={{ width: "100%" }}>
+          <Text category="h2" style={{ fontFamily: "SFProText-Semibold" }}>
+            {localization.t("authorization.signUpTitle")}
           </Text>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("Login")}
+          <Input
+            label={localization.t("authorization.name")}
+            placeholder={localization.t("authorization.formNamePlaceholder")}
+            value={inputData.name}
+            onChangeText={(value) => handleChange("name", value)}
+            style={styles.marginInput}
+          />
+          <Input
+            label={localization.t("authorization.account_name")}
+            placeholder={localization.t(
+              "authorization.formAcountNamePlaceholder"
+            )}
+            value={inputData.account_name}
+            onChangeText={(value) => handleChange("account_name", value)}
+            style={styles.marginInput}
+          />
+          <Input
+            label={localization.t("authorization.email")}
+            placeholder={localization.t("authorization.formEmailPlaceholder")}
+            value={inputData.email}
+            onChangeText={(value) => handleChange("email", value)}
+            style={styles.marginInput}
+          />
+          <Input
+            label={localization.t("authorization.password")}
+            placeholder="********"
+            value={inputData.password}
+            onChangeText={(value) => handleChange("password", value)}
+            secureTextEntry={true}
+            style={styles.marginInput}
+          />
+          <Text style={{ color: "red" }} status="danger">
+            {error && error}
+          </Text>
+          <Button
+            status="primary"
+            style={styles.marginInput}
+            onPress={handleSignIn}
+            disabled={disabled}
           >
-            <Text style={styles.signUp} category="h6" status="primary">
-              {localization.t("authorization.signIn")}
+            {localization.t("authorization.signUp")}
+          </Button>
+          <Layout style={[styles.marginInput]}>
+            <Text style={styles.infoRegister} category="h6">
+              {localization.t("authorization.createAccount.hint")}
             </Text>
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text style={styles.signUp} category="h6" status="primary">
+                {localization.t("authorization.signIn")}
+              </Text>
+            </TouchableWithoutFeedback>
+          </Layout>
         </Layout>
       </Layout>
     </Layout>

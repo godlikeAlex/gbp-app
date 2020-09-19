@@ -19,6 +19,7 @@ import {
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
 import { connect } from "react-redux";
+import TopBar from "../src/components/TopBar";
 
 const styles = StyleSheet.create({
   container: {
@@ -120,6 +121,8 @@ const ConfirmEmail = ({ route, login }: Props) => {
 
   return (
     <Layout style={styles.container}>
+      <TopBar />
+
       <Layout
         style={{
           width: "100%",
