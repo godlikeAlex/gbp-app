@@ -8,7 +8,7 @@ import localization from "../services/localization";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as actions from "../redux/actions";
-import { signIn } from "../core/api";
+import { signUp } from "../core/api";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
@@ -35,9 +35,14 @@ interface LoginProps {
   user: object;
 }
 
-const LoginScreen = ({ login, user }: LoginProps) => {
+const SignUpScreen = ({ login, user }: LoginProps) => {
   const navigation = useNavigation();
-  const [inputData, setInputData] = useState({ email: "", password: "" });
+  const [inputData, setInputData] = useState({
+    name: "",
+    account_name: "",
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
 
@@ -47,13 +52,19 @@ const LoginScreen = ({ login, user }: LoginProps) => {
 
   const handleSignIn = async () => {
     setDisabled(true);
-    if (!inputData.email || !inputData.password) {
+
+    if (
+      !inputData.email ||
+      !inputData.password ||
+      !inputData.account_name ||
+      !inputData.name
+    ) {
       setError(localization.t("authorization.errors.empty"));
       setDisabled(false);
       return;
     }
     try {
-      const data = await signIn({
+      const data = await signUp({
         ...inputData,
         uniqueId: Constants.sessionId,
       });
@@ -61,10 +72,12 @@ const LoginScreen = ({ login, user }: LoginProps) => {
         setDisabled(false);
         return setError(data.err);
       }
-      AsyncStorage.setItem("auth", JSON.stringify(data)).then(() => {
-        login(data);
-        navigation.navigate("Home");
+
+      navigation.navigate("ConfirmEmail", {
+        email: inputData.email,
+        token: data.token,
       });
+      setDisabled(false);
     } catch (error) {
       setDisabled(false);
       setError(error);
@@ -75,8 +88,24 @@ const LoginScreen = ({ login, user }: LoginProps) => {
     <Layout style={styles.container}>
       <Layout style={{ width: "100%" }}>
         <Text category="h2" style={{ fontFamily: "SFProText-Semibold" }}>
-          {localization.t("authorization.signInTitle")}
+          {localization.t("authorization.signUpTitle")}
         </Text>
+        <Input
+          label={localization.t("authorization.name")}
+          placeholder={localization.t("authorization.formNamePlaceholder")}
+          value={inputData.name}
+          onChangeText={(value) => handleChange("name", value)}
+          style={styles.marginInput}
+        />
+        <Input
+          label={localization.t("authorization.account_name")}
+          placeholder={localization.t(
+            "authorization.formAcountNamePlaceholder"
+          )}
+          value={inputData.account_name}
+          onChangeText={(value) => handleChange("account_name", value)}
+          style={styles.marginInput}
+        />
         <Input
           label={localization.t("authorization.email")}
           placeholder={localization.t("authorization.formEmailPlaceholder")}
@@ -101,17 +130,17 @@ const LoginScreen = ({ login, user }: LoginProps) => {
           onPress={handleSignIn}
           disabled={disabled}
         >
-          {localization.t("authorization.signIn")}
+          {localization.t("authorization.signUp")}
         </Button>
         <Layout style={[styles.marginInput]}>
           <Text style={styles.infoRegister} category="h6">
-            {localization.t("authorization.login.hint")}
+            {localization.t("authorization.createAccount.hint")}
           </Text>
           <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("SignUp")}
+            onPress={() => navigation.navigate("Login")}
           >
             <Text style={styles.signUp} category="h6" status="primary">
-              {localization.t("authorization.signUp")}
+              {localization.t("authorization.signIn")}
             </Text>
           </TouchableWithoutFeedback>
         </Layout>
@@ -134,4 +163,4 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);
