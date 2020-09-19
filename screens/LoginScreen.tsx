@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-community/async-storage";
 import { Input, Layout, Button, Text, Icon } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import localization from "../services/localization";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import * as actions from "../redux/actions";
 import { signIn } from "../core/api";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   container: {
@@ -120,7 +120,7 @@ const LoginScreen = ({ login, user }: LoginProps) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: { userReducer: any }) => {
   return {
     user: state.userReducer,
   };

@@ -30,12 +30,7 @@ const styles = StyleSheet.create({
   },
 });
 
-interface LoginProps {
-  login: Function;
-  user: object;
-}
-
-const SignUpScreen = ({ login, user }: LoginProps) => {
+const SignUpScreen = () => {
   const navigation = useNavigation();
   const [inputData, setInputData] = useState({
     name: "",
@@ -149,18 +144,4 @@ const SignUpScreen = ({ login, user }: LoginProps) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.userReducer,
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => {
-  const { login } = bindActionCreators(actions, dispatch);
-
-  return {
-    login,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);
+export default SignUpScreen;

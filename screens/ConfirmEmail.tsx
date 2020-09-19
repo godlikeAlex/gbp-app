@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-community/async-storage";
 import { StyleSheet, SafeAreaView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { bindActionCreators } from "redux";
+import { StackScreenProps } from "@react-navigation/stack";
 import Constants from "expo-constants";
-import Image from "./assets/confirm-email.svg";
 import { Layout, Button, Text } from "@ui-kitten/components";
 import localization from "../services/localization";
-import { StackScreenProps } from "@react-navigation/stack";
 
-import { bindActionCreators } from "redux";
 import * as actions from "../redux/actions";
 import { activateAccount } from "../core/api";
+import Image from "./assets/confirm-email.svg";
 
 import {
   CodeField,
@@ -185,12 +185,6 @@ const ConfirmEmail = ({ route, login }: Props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.userReducer,
-  };
-};
-
 const mapDispatchToProps = (dispatch: any) => {
   const { login } = bindActionCreators(actions, dispatch);
 
@@ -199,4 +193,4 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmEmail);
+export default connect(null, mapDispatchToProps)(ConfirmEmail);
