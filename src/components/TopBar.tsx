@@ -11,7 +11,6 @@ const BackIcon = (props) => (
   <Icon
     {...props}
     name="arrow-back"
-    style={{ width: 32, height: 32 }}
     fill="black"
   />
 );

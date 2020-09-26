@@ -1,9 +1,15 @@
-import { SIGN_IN } from "./types";
+import { SIGN_IN, UPDATE_TOKENS } from "./types";
 
 export const login = (payload: any) => {
-  console.log(SIGN_IN);
   return {
     type: SIGN_IN,
+    payload,
+  };
+};
+
+export const updateTokens = (payload: any) => {
+  return {
+    type: UPDATE_TOKENS,
     payload,
   };
 };

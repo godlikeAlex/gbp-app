@@ -59,7 +59,7 @@ const LoginScreen = ({ login, user }: LoginProps) => {
     try {
       const data = await signIn({
         ...inputData,
-        uniqueId: Constants.sessionId,
+        uniqueId: Constants.installationId,
       });
       if (data.err) {
         setDisabled(false);

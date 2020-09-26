@@ -26,7 +26,8 @@ const Screens = ({ user, login }) => {
       const auth = await AsyncStorage.getItem("auth");
 
       if (auth) {
-        login(JSON.parse(auth));
+        const data = JSON.parse(auth);
+        login({ ...data });
       }
 
       setLoading(false);
@@ -42,7 +43,11 @@ const Screens = ({ user, login }) => {
   return (
     <Stack.Navigator>
       {user.auth.token !== null ? (
-        <Stack.Screen name="Home" component={TabNavigator} />
+        <Stack.Screen
+          name="Home"
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
       ) : (
         <>
           <Stack.Screen

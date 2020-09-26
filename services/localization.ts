@@ -26,6 +26,10 @@ i18n.translations = {
       signInTitle: "Sign in",
       signUpTitle: "Sign up",
     },
+    user: {
+      followers: "Followers",
+      followings: "Followings",
+    },
   },
   ru: { email: "Почта" },
 };

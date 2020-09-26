@@ -8,7 +8,7 @@ import localization from "../services/localization";
 import { signUp } from "../core/api";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Loading from "../src/components/Loading";
-import StyleGuide from "../src/components/StyleGuide";
+import { StyleGuide } from "../src/components/StyleGuide";
 import TopBar from "../src/components/TopBar";
 
 const styles = StyleSheet.create({
@@ -64,7 +64,7 @@ const SignUpScreen = () => {
     try {
       const data = await signUp({
         ...inputData,
-        uniqueId: Constants.sessionId,
+        uniqueId: Constants.installationId,
       });
       if (data.err) {
         setDisabled(false);

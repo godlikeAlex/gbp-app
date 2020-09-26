@@ -8,6 +8,7 @@ import {
   Text,
   Icon,
 } from "@ui-kitten/components";
+import {UserScreen} from '../screens';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -21,15 +22,14 @@ const HomeIcon = (props) => <Icon {...props} name="home" />;
 const SearchIcon = (props) => <Icon {...props} name="search" />;
 const UserIcon = (props) => <Icon {...props} name="person" />;
 
-const BottomTabBar = ({ navigation }) => {
-  const [index, setIndex] = useState(0);
+const BottomTabBar = ({ state, navigation }) => {
+
   const onSelect = (index: number) => {
-    setIndex(index);
-    // navigation.navigate(state.routeNames[index]);
+    navigation.navigate(state.routeNames[index]);
   };
 
   return (
-    <BottomNavigation selectedIndex={index} onSelect={onSelect}>
+    <BottomNavigation selectedIndex={state.index} onSelect={onSelect}>
       <BottomNavigationTab icon={HomeIcon} />
       <BottomNavigationTab icon={SearchIcon} />
       <BottomNavigationTab icon={UserIcon} />
@@ -39,8 +39,10 @@ const BottomTabBar = ({ navigation }) => {
 
 export default () => {
   return (
-    <Navigator tabBar={(props) => <BottomTabBar {...props} />}>
+    <Navigator backBehavior="history" tabBar={(props) => <BottomTabBar {...props} />}>
       <Screen name="Home" component={HomeScreen} />
+      <Screen name="Search" component={HomeScreen} />
+      <Screen name="Profile" component={UserScreen} />
     </Navigator>
   );
 };
