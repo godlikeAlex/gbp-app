@@ -133,3 +133,26 @@ export const getProfile = (id: number) => {
       return e;
     });
 };
+
+export const getPrivewProfilePosts = (id: number) => {
+  return fetchWithAuth(
+    `http://192.168.0.103:8000/api/v1/account/posts/preview/${id}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getPhoto = (uri: string) => {
+  return `http://192.168.0.103:8000/${uri}`;
+};

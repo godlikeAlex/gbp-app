@@ -5,13 +5,14 @@ import {
   View,
   TouchableNativeFeedback,
   ScrollView,
+  Image,
 } from "react-native";
 import { Avatar, Text, Layout, Button } from "@ui-kitten/components";
 import TopBar from "../src/components/TopBar";
 import localization from "../services/localization";
 import { StyleGuide, theme } from "../src/components/StyleGuide";
-import { ProfileInfo } from "../src/components";
-import { getProfile } from "../core/api";
+import { ProfileInfo, GridProfile } from "../src/components";
+import { getPhoto, getPrivewProfilePosts, getProfile } from "../core/api";
 import LoadingSpinner from "../src/components/LoadingSpinner";
 
 const styles = StyleSheet.create({
@@ -26,7 +27,6 @@ interface UserScreenProps {
 }
 
 const UserScreen = ({ auth }: UserScreenProps) => {
-  const posts = new Array(9).fill("");
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({
     name: "",
@@ -39,20 +39,29 @@ const UserScreen = ({ auth }: UserScreenProps) => {
     profile_photo: undefined,
     isOnwer: true,
   });
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     getProfile(auth.user.id).then((data) => {
       if (!data.error) {
+        const category = data.category.find(
+          (category) => category.locale === "ru"
+        );
         setProfile({
           ...data.user,
+          category: category.name,
           countFollowers: data.countFollowers,
           countFollowings: data.countFollowings,
         });
         setLoading(false);
+        getPrivewProfilePosts(9).then((data) => {
+          if (!data.error) {
+            setPosts(data.posts);
+          }
+        });
       }
     });
   }, []);
-
   return (
     <>
       <TopBar title={auth.user.account_name} />
@@ -61,29 +70,7 @@ const UserScreen = ({ auth }: UserScreenProps) => {
       ) : (
         <ScrollView>
           <ProfileInfo {...{ profile }} />
-          <Layout
-            level="4"
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-            }}
-          >
-            {posts.map((post, i) => (
-              <View
-                key={i}
-                style={{ width: "33%", height: 150, paddingBottom: 2 }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "purple",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                />
-              </View>
-            ))}
-          </Layout>
+          <GridProfile posts={posts} />
         </ScrollView>
       )}
     </>

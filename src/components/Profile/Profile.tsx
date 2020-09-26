@@ -12,6 +12,7 @@ interface ProfileProps {
     description: string;
     countFollowers: number;
     countFollowings: number;
+    category?: string;
   };
 }
 
@@ -22,7 +23,9 @@ const Profile = ({ profile }: ProfileProps) => {
     countFollowers,
     countFollowings,
     profile_photo,
+    category,
   } = profile;
+
   return (
     <Layout style={{ ...theme.center }} level="2">
       <Avatar
@@ -39,7 +42,7 @@ const Profile = ({ profile }: ProfileProps) => {
       <Text style={theme.boldText} category="h4">
         {name}
       </Text>
-      <Text style={StyleGuide.margin.top}>Строй материалы</Text>
+      <Text style={StyleGuide.margin.top}>{category}</Text>
       {Boolean(description) && (
         <Text
           style={[
