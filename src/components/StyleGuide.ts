@@ -15,30 +15,33 @@ export const theme = StyleSheet.create({
   centerText: {
     textAlign: "center",
   },
+  flexDirectionRow: {
+    flexDirection: "row",
+  },
 });
 
 export const StyleGuide = {
-  spacing: 20,
+  spacing: 15,
   // Margins
   margin: {
     top: {
-      marginTop: 20,
+      marginTop: 15,
     },
   },
 
   // Paddings
   padding: {
     top: {
-      paddingTop: 20,
+      paddingTop: 15,
     },
     bottom: {
-      paddingBottom: 20,
+      paddingBottom: 15,
     },
     vertical: {
-      paddingVertical: 20,
+      paddingVertical: 15,
     },
     horizontal: {
-      paddingHorizontal: 20,
+      paddingHorizontal: 15,
     },
   },
 };

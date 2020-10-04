@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabNavigator from "./TabNavigator";
-import LoginScreen from "../screens/LoginScreen";
 import { connect } from "react-redux";
 import * as actions from "../redux/actions";
 import { bindActionCreators } from "redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as SplashScreen from "expo-splash-screen";
-import SignUpScreen from "../screens/SignUpScreen";
-import ConfirmEmail from "../screens/ConfirmEmail";
+import {
+  ShowPost,
+  ConfirmEmail,
+  SignUpScreen,
+  LoginScreen,
+  Comments,
+} from "../screens";
 
-const Stack = createStackNavigator();
+export type RootStackParamList = {
+  Comments: { postId: string | string };
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 const Screens = ({ user, login }) => {
   const [loading, setLoading] = useState(true);
@@ -42,12 +50,24 @@ const Screens = ({ user, login }) => {
 
   return (
     <Stack.Navigator>
-      {user.auth.token !== null ? (
-        <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
+      {user.auth.token !== null && user.auth.token !== undefined ? (
+        <>
+          <Stack.Screen
+            name="Home"
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ShowPost"
+            component={ShowPost}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Comments"
+            component={Comments}
+            options={{ headerShown: false }}
+          />
+        </>
       ) : (
         <>
           <Stack.Screen

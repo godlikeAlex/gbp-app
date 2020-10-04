@@ -3,7 +3,7 @@ import { TouchableNativeFeedback, View } from "react-native";
 import { Avatar, Layout, Text } from "@ui-kitten/components";
 import { theme, StyleGuide } from "../StyleGuide";
 import localization from "../../../services/localization";
-import BlankUserImage from "../assets/blank-user.jpg";
+import ProfilePhoto from "../ProfilePhoto";
 
 interface ProfileProps {
   profile: {
@@ -28,17 +28,7 @@ const Profile = ({ profile }: ProfileProps) => {
 
   return (
     <Layout style={{ ...theme.center }} level="2">
-      <Avatar
-        style={{ width: 100, height: 100, marginVertical: 20 }}
-        source={
-          !profile_photo
-            ? BlankUserImage
-            : {
-                uri:
-                  "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/d9/d94c7fea789b35eace67cc49c6f2580a7a260742_full.jpg",
-              }
-        }
-      />
+      <ProfilePhoto profilePhoto={profile_photo} width={100} height={100} />
       <Text style={theme.boldText} category="h4">
         {name}
       </Text>

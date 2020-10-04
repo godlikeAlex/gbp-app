@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Image, TouchableHighlight } from "react-native";
 import { getPhoto } from "../../../core/api";
 import { Layout } from "@ui-kitten/components";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -14,6 +15,8 @@ interface GridProfileProps {
 }
 
 const GridProfile = ({ posts }: GridProfileProps) => {
+  const navigation = useNavigation();
+
   return (
     <Layout
       level="4"
@@ -29,7 +32,7 @@ const GridProfile = ({ posts }: GridProfileProps) => {
           <TouchableHighlight
             activeOpacity={0.6}
             underlayColor="#000"
-            onPress={() => console.log("true")}
+            onPress={() => navigation.navigate("ShowPost", { id: post.id })}
           >
             <View>
               <Image

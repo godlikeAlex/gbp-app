@@ -3,6 +3,7 @@ import { updateTokens } from "../redux/actions";
 import store from "../redux/store";
 import { LOG_OUT } from "../redux/types";
 import Constants from "expo-constants";
+import querystring from "query-string";
 
 export const signIn = (data: any) => {
   return fetch("http://192.168.0.103:8888/api/v1/auth/sign-in", {
@@ -93,7 +94,7 @@ const fetchWithAuth = async (url: string, options: any) => {
           if (data.error) {
             await AsyncStorage.removeItem("auth");
             store.dispatch({ type: LOG_OUT });
-            console.log("error 2");
+            return;
           }
 
           options.headers.Authorization = `Bearer ${data.token}`;
@@ -155,4 +156,80 @@ export const getPrivewProfilePosts = (id: number) => {
 
 export const getPhoto = (uri: string) => {
   return `http://192.168.0.103:8000/${uri}`;
+};
+
+export const getPost = (id: any) => {
+  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/post/show/${id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const toggleLike = (id: any) => {
+  return fetchWithAuth(
+    `http://192.168.0.103:8000/api/v1/post/toggle/like/${id}`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getComments = (id: number | string, data: { page?: number }) => {
+  const params = querystring.stringify(data);
+
+  return fetchWithAuth(
+    `http://192.168.0.103:8000/api/v1/post/show/comments/${id}?${params}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const createComment = (id: string | number, comment: string) => {
+  return fetchWithAuth(
+    `http://192.168.0.103:8000/api/v1/post/comment/${id}/create`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ comment }),
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
 };
