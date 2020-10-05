@@ -6,6 +6,7 @@ import { Post } from "../src/components";
 import { PostProps } from "../src/components/Post/Post";
 import { getPost } from "../core/api";
 import LoadingSpinner from "../src/components/LoadingSpinner";
+import localization from "../services/localization";
 
 const styles = StyleSheet.create({
   container: {
@@ -35,6 +36,7 @@ const ShowPost = ({ route }: any) => {
     content,
     user,
     likes_count,
+    createdAt,
   } = post;
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const ShowPost = ({ route }: any) => {
   return (
     // Maybe broken
     <Layout style={{ flex: 1 }}>
-      <TopBar title="Post" />
+      <TopBar title={localization.t("post")} />
       {loading ? (
         <LoadingSpinner />
       ) : (
@@ -62,6 +64,7 @@ const ShowPost = ({ route }: any) => {
             content,
             user,
             likes_count,
+            createdAt,
           }}
         />
       )}

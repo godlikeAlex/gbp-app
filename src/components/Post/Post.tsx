@@ -13,7 +13,9 @@ import { StyleGuide, theme } from "../StyleGuide";
 import { getPhoto, toggleLike as toggleLikeApi } from "../../../core/api";
 import ProfilePhoto from "../ProfilePhoto";
 import { useNavigation } from "@react-navigation/native";
-
+import localization from "../../../services/localization";
+import Moment from "react-moment";
+import "moment/locale/ru";
 const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
@@ -61,6 +63,7 @@ export interface PostProps {
   user: any;
   isLiked: boolean;
   likes_count: string | number;
+  createdAt: string;
 }
 
 export default ({
@@ -70,6 +73,7 @@ export default ({
   likes_count,
   content,
   description,
+  createdAt,
 }: PostProps) => {
   const navigation = useNavigation();
   const [liked, setLiked] = useState(isLiked);
@@ -108,12 +112,27 @@ export default ({
       <View style={styles.userInfo}>
         <ProfilePhoto
           profilePhoto={user.profile_photo}
-          width={35}
-          height={35}
+          width={40}
+          height={40}
         />
-        <Text style={{ ...styles.userName, ...theme.text }}>
-          {user.account_name}
-        </Text>
+        <View
+          style={{
+            ...styles.userName,
+            flexDirection: "column",
+          }}
+        >
+          <Text style={{ ...theme.text, ...theme.boldText }}>
+            {user.account_name}
+          </Text>
+          <Moment
+            locale={localization.locale || "ru"}
+            element={Text}
+            style={{ ...theme.text, fontSize: 13, color: "gray" }}
+            fromNow
+          >
+            {createdAt}
+          </Moment>
+        </View>
       </View>
 
       {/* Slider */}
@@ -179,7 +198,9 @@ export default ({
         </TouchableOpacity>
       </View>
       <View style={{ ...StyleGuide.padding.horizontal, paddingTop: 10 }}>
-        <Text style={theme.boldText}>{likes} Likes</Text>
+        <Text style={theme.boldText}>
+          {likes} {localization.t("likes")}
+        </Text>
         <View
           style={{
             ...theme.flexDirectionRow,
