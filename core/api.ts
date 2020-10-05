@@ -174,9 +174,11 @@ export const getPost = (id: any) => {
     });
 };
 
-export const toggleLike = (id: any) => {
+export const toggleLike = (id: any, type: string = "post") => {
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/post/toggle/like/${id}`,
+    type === "post"
+      ? `http://192.168.0.103:8000/api/v1/post/toggle/like/${id}`
+      : `http://192.168.0.103:8000/api/v1/post/comment/toggle/like/${id}`,
     {
       method: "POST",
       headers: {
