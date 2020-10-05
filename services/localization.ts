@@ -30,6 +30,11 @@ i18n.translations = {
       followers: "Followers",
       followings: "Followings",
     },
+    likes: "Likes",
+    post: "Post",
+    comments: "Comments",
+    sendComment: "post",
+    addComment: "Add comment...",
   },
   ru: { email: "Почта" },
 };
