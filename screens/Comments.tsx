@@ -9,7 +9,7 @@ import {
 import TopBar from "../src/components/TopBar";
 import { Layout, Input, Icon, Text, Spinner } from "@ui-kitten/components";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../navigation/StackNavigator";
+import { RootStackParamList } from "../navigation/ProfileNavigator";
 import { RouteProp } from "@react-navigation/native";
 import { createComment, getComments, toggleLike } from "../core/api";
 import { ProfilePhoto } from "../src/components";

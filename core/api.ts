@@ -235,3 +235,24 @@ export const createComment = (id: string | number, comment: string) => {
       return e;
     });
 };
+
+export const getFollowers = (id: any, data: { page: number }) => {
+  const params = querystring.stringify(data);
+
+  return fetch(
+    `http://192.168.0.103:8000/api/v1/user/followers/${id}?${params}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};

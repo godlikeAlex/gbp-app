@@ -1,4 +1,5 @@
-export { default as ProfileInfo } from "./Profile";
+export { default as ProfileInfo } from "./ProfileInfo";
 export { default as GridProfile } from "./GridProfile";
 export { default as Post } from "./Post";
 export { default as ProfilePhoto } from "./ProfilePhoto";
+export { default as Profile } from "./Profile";

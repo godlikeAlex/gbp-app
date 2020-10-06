@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -67,9 +67,8 @@ const LoginScreen = ({ login, user }: LoginProps) => {
         return setError(data.err);
       }
       AsyncStorage.setItem("auth", JSON.stringify(data)).then(() => {
-        login(data);
         setLoading(false);
-        navigation.navigate("Home");
+        login(data);
       });
     } catch (error) {
       setDisabled(false);

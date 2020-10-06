@@ -1,77 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import {
-  StyleSheet,
-  View,
-  TouchableNativeFeedback,
-  ScrollView,
-  Image,
-} from "react-native";
-import { Avatar, Text, Layout, Button } from "@ui-kitten/components";
 import TopBar from "../src/components/TopBar";
-import localization from "../services/localization";
-import { StyleGuide, theme } from "../src/components/StyleGuide";
-import { ProfileInfo, GridProfile } from "../src/components";
-import { getPhoto, getPrivewProfilePosts, getProfile } from "../core/api";
+import { Profile } from "../src/components";
+import { getPrivewProfilePosts, getProfile } from "../core/api";
 import LoadingSpinner from "../src/components/LoadingSpinner";
+import { bindActionCreators } from "redux";
+import * as actions from "../redux/actions";
+import { RootStackParamList } from "../navigation/ProfileNavigator";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    textAlign: "center",
-  },
-});
+type UserScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Profile"
+>;
+type UserScreenRouteProp = RouteProp<RootStackParamList, "Profile">;
 
 interface UserScreenProps {
   auth: any;
+  logOut: any;
+  addUser: any;
+  users: any[];
+  navigation: UserScreenNavigationProp;
+  route: UserScreenRouteProp;
 }
 
-const UserScreen = ({ auth }: UserScreenProps) => {
+const UserScreen = ({ auth, route, addUser, users }: UserScreenProps) => {
+  const { userId } = route.params;
+  const user = users.find((user) => user.id === userId);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState({
-    name: "",
-    description: "",
-    user: {
-      name: "",
-    },
-    countFollowings: 0,
-    countFollowers: 0,
-    profile_photo: undefined,
-    isOnwer: true,
-  });
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    getProfile(auth.user.id).then((data) => {
-      if (!data.error) {
-        const category = data.category.find(
-          (category) => category.locale === "ru"
-        );
-        setProfile({
-          ...data.user,
-          category: category.name,
-          countFollowers: data.countFollowers,
-          countFollowings: data.countFollowings,
-        });
-        setLoading(false);
-        getPrivewProfilePosts(9).then((data) => {
-          if (!data.error) {
-            setPosts(data.posts);
-          }
-        });
-      }
-    });
+    if (user) {
+      // REFRESH
+      // POST STORE
+      setLoading(false);
+      getPrivewProfilePosts(userId).then((data) => {
+        if (!data.error) {
+          setPosts(data.posts);
+        }
+      });
+    } else {
+      getProfile(userId).then((data) => {
+        if (!data.error) {
+          const category = data.category.find(
+            (category: any) => category.locale === "ru"
+          );
+          addUser({
+            ...data.user,
+            category: category.name,
+            countFollowers: data.countFollowers,
+            countFollowings: data.countFollowings,
+            canSubscribe: data.canSubscribe,
+          });
+          setLoading(false);
+          getPrivewProfilePosts(userId).then((data) => {
+            if (!data.error) {
+              setPosts(data.posts);
+            }
+          });
+        }
+      });
+    }
   }, []);
+
   return (
     <>
       <TopBar title={auth.user.account_name} />
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <ScrollView>
-          <ProfileInfo {...{ profile }} />
-          <GridProfile posts={posts} />
-        </ScrollView>
+        <Profile profileInfo={user} posts={posts} />
       )}
     </>
   );
@@ -80,7 +80,17 @@ const UserScreen = ({ auth }: UserScreenProps) => {
 const mapStateToProps = (state: { userReducer: any }) => {
   return {
     auth: state.userReducer.auth,
+    users: state.userReducer.users,
   };
 };
 
-export default connect(mapStateToProps)(UserScreen);
+const mapDispatchToProps = (dispatch: any) => {
+  const { logOut, addUser } = bindActionCreators(actions, dispatch);
+
+  return {
+    logOut,
+    addUser,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserScreen);

@@ -25,9 +25,10 @@ const BackAction = () => {
 
 interface TopBarProps {
   title?: string;
+  accessoryRight?: any;
 }
 
-export default ({ title }: TopBarProps) => (
+export default ({ title, accessoryRight }: TopBarProps) => (
   <TopNavigation
     accessoryLeft={BackAction}
     title={title}
@@ -36,5 +37,6 @@ export default ({ title }: TopBarProps) => (
       marginLeft: 0,
       paddingLeft: StyleGuide.spacing,
     }}
+    accessoryRight={accessoryRight}
   />
 );

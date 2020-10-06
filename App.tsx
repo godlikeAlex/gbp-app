@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { NavigationContainer } from "@react-navigation/native";
-import StackNavigator from "./navigation/StackNavigator";
+import TabNavigator from "./navigation/TabNavigator";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { AppLoading } from "expo";
 import { useFonts } from "expo-font";
@@ -28,7 +28,7 @@ export default function App() {
         <ApplicationProvider {...eva} theme={eva.light}>
           <Provider {...{ store }}>
             <NavigationContainer>
-              <StackNavigator />
+              <TabNavigator />
             </NavigationContainer>
           </Provider>
         </ApplicationProvider>

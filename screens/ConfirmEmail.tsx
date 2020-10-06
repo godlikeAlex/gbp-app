@@ -111,7 +111,7 @@ const ConfirmEmail = ({ route, login }: Props) => {
 
     AsyncStorage.setItem("auth", JSON.stringify(data)).then(() => {
       login({ ...data, uniqueId });
-      navigation.navigate("Home");
+      navigation.navigate("HomeStack");
     });
   };
 

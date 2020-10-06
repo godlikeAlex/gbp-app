@@ -109,31 +109,36 @@ export default ({
 
   return (
     <Layout style={styles.container} level="1">
-      <View style={styles.userInfo}>
-        <ProfilePhoto
-          profilePhoto={user.profile_photo}
-          width={40}
-          height={40}
-        />
-        <View
-          style={{
-            ...styles.userName,
-            flexDirection: "column",
-          }}
-        >
-          <Text style={{ ...theme.text, ...theme.boldText }}>
-            {user.account_name}
-          </Text>
-          <Moment
-            locale={localization.locale || "ru"}
-            element={Text}
-            style={{ ...theme.text, fontSize: 13, color: "gray" }}
-            fromNow
+      <TouchableWithoutFeedback
+        onPress={() => navigation.navigate("Profile")}
+        style={styles.userInfo}
+      >
+        <View style={styles.userInfo}>
+          <ProfilePhoto
+            profilePhoto={user.profile_photo}
+            width={40}
+            height={40}
+          />
+          <View
+            style={{
+              ...styles.userName,
+              flexDirection: "column",
+            }}
           >
-            {createdAt}
-          </Moment>
+            <Text style={{ ...theme.text, ...theme.boldText }}>
+              {user.account_name}
+            </Text>
+            <Moment
+              locale={localization.locale || "ru"}
+              element={Text}
+              style={{ ...theme.text, fontSize: 13, color: "gray" }}
+              fromNow
+            >
+              {createdAt}
+            </Moment>
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
 
       {/* Slider */}
 
