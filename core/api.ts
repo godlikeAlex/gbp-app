@@ -239,7 +239,7 @@ export const createComment = (id: string | number, comment: string) => {
 export const getFollowers = (id: any, data: { page: number }) => {
   const params = querystring.stringify(data);
 
-  return fetch(
+  return fetchWithAuth(
     `http://192.168.0.103:8000/api/v1/user/followers/${id}?${params}`,
     {
       method: "GET",
@@ -249,6 +249,61 @@ export const getFollowers = (id: any, data: { page: number }) => {
       },
     }
   )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getFollowings = (id: any, data: { page: number }) => {
+  const params = querystring.stringify(data);
+
+  return fetchWithAuth(
+    `http://192.168.0.103:8000/api/v1/user/followings/${id}?${params}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const unfollow = (userId: string | number) => {
+  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/user/unfollow`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ userId }),
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const follow = (userId: string | number) => {
+  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/user/follow`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ userId }),
+  })
     .then((data: any) => {
       return data.json();
     })
