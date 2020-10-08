@@ -7,6 +7,7 @@ import {
   INCREMENT_FOLLOWINGS,
   DECRIMENT_FOLLOWINGS,
   ADD_USER,
+  INIT_PROFILE,
 } from "./../types";
 
 const initialState = {
@@ -18,10 +19,16 @@ const initialState = {
       account_name: "c",
     },
   },
-  followers: 0,
-  followings: 0,
-  description: "",
-  profile_photo: null,
+  myProfile: {
+    name: "",
+    description: "",
+    user: {
+      name: "",
+    },
+    countFollowings: 0,
+    countFollowers: 0,
+    profile_photo: undefined,
+  },
   users: [],
 };
 
@@ -39,25 +46,43 @@ const user = (state = initialState, action: any) => {
         ...state,
         auth: action.payload,
       };
+    case INIT_PROFILE: {
+      return {
+        ...state,
+        myProfile: action.payload,
+      };
+    }
     case INCREMENT_FOLLOWERS:
       return {
         ...state,
-        followers: state["followers"] + 1,
+        myProfile: {
+          ...state.myProfile,
+          countFollowers: state.myProfile.countFollowers + 1,
+        },
       };
     case DECRIMENT_FOLLOWERS:
       return {
         ...state,
-        followers: state["followers"] - 1,
+        myProfile: {
+          ...state.myProfile,
+          countFollowers: state.myProfile.countFollowers - 1,
+        },
       };
     case INCREMENT_FOLLOWINGS:
       return {
         ...state,
-        followers: state["followings"] + 1,
+        myProfile: {
+          ...state.myProfile,
+          countFollowings: state.myProfile.countFollowings + 1,
+        },
       };
     case DECRIMENT_FOLLOWINGS:
       return {
         ...state,
-        followers: state["followings"] - 1,
+        myProfile: {
+          ...state.myProfile,
+          countFollowings: state.myProfile.countFollowings - 1,
+        },
       };
     case ADD_USER:
       return {

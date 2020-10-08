@@ -7,6 +7,12 @@ import {
   INCREMENT_FOLLOWINGS,
   DECRIMENT_FOLLOWINGS,
   ADD_USER,
+  ADD_FOLLOWERS,
+  INIT_FOLLOWERS,
+  TOGGLE_FOLLOW,
+  INIT_FOLLOWINGS,
+  TOGGLE_FOLLOWING,
+  INIT_PROFILE,
 } from "./types";
 
 export const login = (payload: any) => {
@@ -44,6 +50,48 @@ export const decFollows = (follower: boolean) => {
 export const addUser = (payload: any) => {
   return {
     type: ADD_USER,
+    payload,
+  };
+};
+
+export const initFollowers = (payload: { id: number; followers: any[] }) => {
+  return {
+    type: INIT_FOLLOWERS,
+    payload,
+  };
+};
+
+export const initFollowings = (payload: { id: number; followings: any[] }) => {
+  return {
+    type: INIT_FOLLOWINGS,
+    payload,
+  };
+};
+
+export const addFollowers = (payload: { id: number; followers: any[] }) => {
+  return {
+    type: ADD_FOLLOWERS,
+    payload,
+  };
+};
+
+export const toggleFollow = (payload: { id: number; toggleId: number }) => {
+  return {
+    type: TOGGLE_FOLLOW,
+    payload,
+  };
+};
+
+export const toggleFollowing = (payload: { id: number; toggleId: number }) => {
+  return {
+    type: TOGGLE_FOLLOWING,
+    payload,
+  };
+};
+
+export const initProfile = (payload) => {
+  return {
+    type: INIT_PROFILE,
     payload,
   };
 };
