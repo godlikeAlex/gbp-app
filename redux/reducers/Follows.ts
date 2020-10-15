@@ -15,7 +15,10 @@ const follows = (state: any = initialState, action: any) => {
   const toggleFollows = (action: any) => {
     let finalState = { ...state };
 
+    console.log(action);
+
     if (state.followers.hasOwnProperty(action.payload.id)) {
+
       finalState.followers = {
         ...state.followers,
         [action.payload.id]: state["followers"][action.payload.id].map(
@@ -44,6 +47,8 @@ const follows = (state: any = initialState, action: any) => {
         ),
       };
     }
+
+    console.log(finalState);
 
     return finalState;
   };

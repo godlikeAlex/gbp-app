@@ -10,7 +10,7 @@ import {
 
 export type RootStackParamList = {
   MyProfile: {};
-  Profile: { userId: number };
+  UserScreen: { userId: number };
   ShowPost: {};
   Follows: { type: "followers" | "followings"; userId: number };
   Comments: { postId: string | string };
@@ -32,7 +32,7 @@ const Screens = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Profile"
+        name="UserScreen"
         component={UserScreen}
         options={{ headerShown: false }}
       />

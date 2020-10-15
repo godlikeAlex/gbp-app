@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import {} from "../screens";
+// import {} from "../screens";
 import { Text } from "react-native";
 
 export type RootStackParamList = {

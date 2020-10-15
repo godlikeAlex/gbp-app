@@ -13,6 +13,9 @@ import {
   INIT_FOLLOWINGS,
   TOGGLE_FOLLOWING,
   INIT_PROFILE,
+  TOGGLE_FOLLOW_GLOBAL,
+  INIT_POSTS,
+  LOAD_MORE_POSTS
 } from "./types";
 
 export const login = (payload: any) => {
@@ -95,3 +98,25 @@ export const initProfile = (payload) => {
     payload,
   };
 };
+
+export const toggleFollowToUser = (payload: any) => {
+  return {
+    type: TOGGLE_FOLLOW_GLOBAL,
+    payload
+  }
+}
+
+export const initPosts = (payload: {id: number, posts: any[]}) => {
+  return {
+    type: INIT_POSTS,
+    payload
+  }
+}
+
+export const loadMorePosts = (payload: {id: number, posts: any[]}) => {
+  return {
+    type: LOAD_MORE_POSTS,
+    payload
+  }
+}
+

@@ -19,9 +19,6 @@ import "moment/locale/ru";
 const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  container: {
-    height: "100%",
-  },
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
@@ -160,6 +157,7 @@ export default ({
               </View>
             </View>
           )}
+          keyExtractor={(item, index) => index.toString()}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}

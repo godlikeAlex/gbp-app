@@ -135,9 +135,12 @@ export const getProfile = (id: number) => {
     });
 };
 
-export const getPrivewProfilePosts = (id: number) => {
+export const getProfilePosts = (id: number, data: {page: number}) => {
+  
+  const params = querystring.stringify(data);
+
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/account/posts/preview/${id}`,
+    `http://192.168.0.103:8000/api/v1/account/posts/preview/${id}?${params}`,
     {
       method: "GET",
       headers: {

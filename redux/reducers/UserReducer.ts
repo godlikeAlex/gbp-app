@@ -8,6 +8,9 @@ import {
   DECRIMENT_FOLLOWINGS,
   ADD_USER,
   INIT_PROFILE,
+  TOGGLE_FOLLOW_GLOBAL,
+  INIT_POSTS,
+  LOAD_MORE_POSTS
 } from "./../types";
 
 const initialState = {
@@ -30,6 +33,7 @@ const initialState = {
     profile_photo: undefined,
   },
   users: [],
+  posts: {}, // userId: posts[]
 };
 
 const user = (state = initialState, action: any) => {
@@ -85,10 +89,56 @@ const user = (state = initialState, action: any) => {
         },
       };
     case ADD_USER:
+      const allReadyExists = state.users.findIndex((u: any) => u.id === action.payload.id);
+
+      let users: any[] = state.users;
+      
+      if (allReadyExists !== -1) {
+        users = users.filter(user => user.id != action.payload.id);    
+      } 
+
+      users.push(action.payload);
+
       return {
         ...state,
-        users: [...state.users, action.payload],
+        users
       };
+    case TOGGLE_FOLLOW_GLOBAL: 
+      return {
+        ...state,
+        users: state.users.map(
+          (item: any) => {
+            if (item.id === action.payload.toggleId) {
+              return { ...item, canSubscribe: !item.canSubscribe };
+            }
+
+            return item;
+          }
+        )
+      }
+    case INIT_POSTS: return {
+      ...state,
+      posts: {
+        ...state.posts,
+        [action.payload.id]: {
+          initialLoading: action.payload.initialLoading,
+          data: action.payload.posts
+        }
+      }
+    }
+    case LOAD_MORE_POSTS: return {
+      ...state,
+      posts: {
+        ...state.posts,
+        [action.payload.id]: {
+          ...state.posts[action.payload.id],
+          data: [
+            ...state.posts[action.payload.id].data,
+            ...action.payload.posts
+          ]
+        }
+      }
+    }
     default:
       return state;
   }

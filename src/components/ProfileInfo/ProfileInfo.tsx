@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableNativeFeedback, View } from "react-native";
-import { Layout, Text } from "@ui-kitten/components";
+import { Button, Layout, Text } from "@ui-kitten/components";
 import { theme, StyleGuide } from "../StyleGuide";
 import localization from "../../../services/localization";
 import ProfilePhoto from "../ProfilePhoto";
@@ -16,10 +16,11 @@ interface ProfileInfoProps {
     countFollowings: number;
     category?: string;
   };
+  buttons: any[];
 }
 
-const ProfileInfo = ({ profile }: ProfileInfoProps) => {
-  const navigation = useNavigation();
+const ProfileInfo = ({ profile, buttons }: ProfileInfoProps) => {
+  const navigation = useNavigation<any>();
   const {
     id,
     name,
@@ -31,24 +32,11 @@ const ProfileInfo = ({ profile }: ProfileInfoProps) => {
   } = profile;
 
   return (
-    <Layout style={{ ...theme.center }} level="2">
+    <Layout style={{ ...theme.center, paddingBottom: 15 }} level="2">
       <ProfilePhoto profilePhoto={profile_photo} width={100} height={100} />
       <Text style={theme.boldText} category="h4">
         {name}
       </Text>
-      <Text style={StyleGuide.margin.top}>{category}</Text>
-      {Boolean(description) && (
-        <Text
-          style={[
-            StyleGuide.padding.top,
-            StyleGuide.padding.horizontal,
-            theme.centerText,
-          ]}
-          appearance="hint"
-        >
-          {description}
-        </Text>
-      )}
       <View
         style={{
           flexDirection: "row",
@@ -59,7 +47,7 @@ const ProfileInfo = ({ profile }: ProfileInfoProps) => {
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("#EEE")}
           onPress={() =>
-            navigation.navigate("Follows", { type: "followers", userId: id })
+            navigation.push("Follows", { type: "followers", userId: id })
           }
         >
           <View style={{ padding: 15 }}>
@@ -73,7 +61,7 @@ const ProfileInfo = ({ profile }: ProfileInfoProps) => {
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple("#EEE")}
           onPress={() =>
-            navigation.navigate("Follows", { type: "followings", userId: id })
+            navigation.push("Follows", { type: "followings", userId: id })
           }
         >
           <View style={{ padding: 15 }}>
@@ -84,6 +72,22 @@ const ProfileInfo = ({ profile }: ProfileInfoProps) => {
           </View>
         </TouchableNativeFeedback>
       </View>
+        {buttons.map((Button, i) => <View key={i}>{Button}</View>)}
+      <Text style={StyleGuide.margin.top}>{category}</Text>
+
+      {Boolean(description) && (
+        <Text
+          style={[
+            StyleGuide.padding.top,
+            StyleGuide.padding.horizontal,
+            theme.centerText,
+          ]}
+          appearance="hint"
+        >
+          {description}
+        </Text>
+      )}
+
     </Layout>
   );
 };

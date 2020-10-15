@@ -7,10 +7,11 @@ import {
 } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import { StyleGuide } from "./StyleGuide";
+import { StyleProp, StyleSheetProperties, ViewStyle } from "react-native";
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" fill="black" />;
 
-const BackAction = () => {
+const BackAction = ({onBackAction}: {onBackAction: () => void}) => {
   const navigation = useNavigation();
 
   return (
@@ -18,7 +19,7 @@ const BackAction = () => {
       icon={BackIcon}
       activeOpacity={0.2}
       style={{ marginLeft: 0 }}
-      onPress={() => navigation.goBack()}
+      onPress={() => onBackAction ? onBackAction() : navigation.goBack()}
     />
   );
 };
@@ -26,16 +27,19 @@ const BackAction = () => {
 interface TopBarProps {
   title?: string;
   accessoryRight?: any;
+  style?: StyleProp<ViewStyle>;
+  onBackAction?: () => void;
 }
 
-export default ({ title, accessoryRight }: TopBarProps) => (
+export default ({ title, accessoryRight, style, onBackAction }: TopBarProps) => (
   <TopNavigation
-    accessoryLeft={BackAction}
+    accessoryLeft={() => <BackAction {...{onBackAction}} />}
     title={title}
     style={{
       marginTop: Constants.statusBarHeight,
       marginLeft: 0,
       paddingLeft: StyleGuide.spacing,
+      ...style
     }}
     accessoryRight={accessoryRight}
   />
