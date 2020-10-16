@@ -314,3 +314,24 @@ export const follow = (userId: string | number) => {
       return e;
     });
 };
+
+export const getMyFeed = (data: { page: number }) => {
+  const params = querystring.stringify(data);
+
+  return fetchWithAuth(
+    `http://192.168.0.103:8000/api/v1/feed/?${params}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};

@@ -40,7 +40,7 @@ const FeedProfilePosts = ({posts, recyclerRef, withScrollTo, loadMoreData, hasNe
   // const data = dataProvider.cloneWithRows(posts);
 
   const renderFooter = () => (
-    loading ? <View><ActivityIndicator /></View> : null
+    loading ? <View><ActivityIndicator size='large' /></View> : null
   );
 
   const onEndReached = () => {
@@ -72,9 +72,10 @@ const FeedProfilePosts = ({posts, recyclerRef, withScrollTo, loadMoreData, hasNe
         data={posts}
         renderItem={_renderRow}
         keyExtractor={keyExtractor}
-        maxToRenderPerBatch={3}
+        maxToRenderPerBatch={4}
         onEndReached={onEndReached}
-        onEndReachedThreshold={0.4}
+        onEndReachedThreshold={2}
+        showsVerticalScrollIndicator={false}
         ListFooterComponent={renderFooter}
         initialNumToRender={2}
       />

@@ -74,7 +74,7 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
   );
 
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}: any) => {
-    const paddingToBottom = height * 0.6;
+    const paddingToBottom =   100;
     return layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom;
   };
@@ -98,6 +98,8 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
   }
 
   const loadMoreData = () => {
+    console.log('opa4ki');
+
     return new Promise(resolve => {
       getProfilePosts(profileInfo.id, {page: Number(state.page) + 1}).then((data) => {
         if (!data.error) {
@@ -151,7 +153,6 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
           height: '100%', 
           backgroundColor: 'white', 
           left: detailsPosts ? undefined : '100%',
-          
         }}
       >
         <FeedProfilePosts 
@@ -172,7 +173,7 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
           }
         }}
         contentContainerStyle={{minHeight: '100%'}}
-        scrollEventThrottle={20}
+        scrollEventThrottle={2}
       >
         <ProfileInfo profile={profileInfo} buttons={buttons} />
         {posts.initialLoading === undefined ? (<Layout style={{flex: 1, borderTopColor: '#e1e1e1', borderTopWidth: 1}} level='2'>

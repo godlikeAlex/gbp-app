@@ -19,6 +19,9 @@ import "moment/locale/ru";
 const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 10
+  },
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
@@ -107,7 +110,7 @@ export default ({
   return (
     <Layout style={styles.container} level="1">
       <TouchableWithoutFeedback
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.navigate("UserScreen", {userId: user.id})}
         style={styles.userInfo}
       >
         <View style={styles.userInfo}>
