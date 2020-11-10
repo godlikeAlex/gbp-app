@@ -66,6 +66,14 @@ const SignUpScreen = () => {
         ...inputData,
         uniqueId: Constants.installationId,
       });
+
+      if (data.errors) {
+        setError(localization.t(`errors.${data.errors[0].msg}`));
+        setDisabled(false);
+        setLoading(false);
+        return;
+      }
+
       if (data.err) {
         setDisabled(false);
         setLoading(false);

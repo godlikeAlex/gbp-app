@@ -8,9 +8,12 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import { Text, Layout, Avatar, Icon } from "@ui-kitten/components";
+import { connect } from "react-redux";
+import * as actions from "../../../redux/actions";
+import { bindActionCreators } from "redux";
+import { Text, Layout, Avatar, Icon, Modal, Card, Button, ListItem, Divider, List } from "@ui-kitten/components";
 import { StyleGuide, theme } from "../StyleGuide";
-import { getPhoto, toggleLike as toggleLikeApi } from "../../../core/api";
+import { getPhoto, removePost, toggleLike as toggleLikeApi } from "../../../core/api";
 import ProfilePhoto from "../ProfilePhoto";
 import { useNavigation } from "@react-navigation/native";
 import localization from "../../../services/localization";
@@ -25,7 +28,6 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: StyleGuide.spacing,
     paddingVertical: StyleGuide.spacing * 0.5,
   },
   userName: {
@@ -53,6 +55,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 });
 
 export interface PostProps {
@@ -64,9 +69,14 @@ export interface PostProps {
   isLiked: boolean;
   likes_count: string | number;
   createdAt: string;
+
+  // redux
+  auth: any;
+
+  removePost: (payload: {userId: string | number, postId: string | number}) => void; 
 }
 
-export default ({
+const Post = ({
   id,
   user,
   isLiked,
@@ -74,11 +84,43 @@ export default ({
   content,
   description,
   createdAt,
+  auth,
+  removePost: removePostFromState
 }: PostProps) => {
   const navigation = useNavigation();
   const [liked, setLiked] = useState(isLiked);
   const [likes, setLikes] = useState<number>(Number(likes_count));
   const [index, setIndex] = useState(0);
+
+  const ownerItems = [
+    {
+      title: localization.t('removepost'),
+      onPress: () => {
+        removePost(id).then((data) => {
+          if(data.status === 'ok') {
+            removePostFromState({userId: user.id, postId: id})
+          }
+        })
+      }
+    },
+    {
+      title: localization.t('copypost'),
+      onPress: () => {
+        console.log(true)
+      }
+    }
+  ]
+
+  const defaultItems = [
+    {
+      title: localization.t('copypost'),
+      onPress: () => {
+        console.log(true)
+      }
+    }
+  ]
+
+  const [visible, setVisible] = React.useState(false);
   const indexRef = useRef(index);
   indexRef.current = index;
   const onScroll = useCallback((event) => {
@@ -107,38 +149,50 @@ export default ({
     });
   };
 
+  const renderModalItem = ({ item, index }) => (
+    <ListItem
+      title={() => <Text style={{fontSize: 18}}>{item.title}</Text>}
+      onPress={item.onPress}
+    />
+  );
+
   return (
+    <>
     <Layout style={styles.container} level="1">
-      <TouchableWithoutFeedback
-        onPress={() => navigation.navigate("UserScreen", {userId: user.id})}
-        style={styles.userInfo}
-      >
-        <View style={styles.userInfo}>
-          <ProfilePhoto
-            profilePhoto={user.profile_photo}
-            width={40}
-            height={40}
-          />
-          <View
-            style={{
-              ...styles.userName,
-              flexDirection: "column",
-            }}
+        <Layout style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingHorizontal: StyleGuide.spacing,}}>
+        <TouchableWithoutFeedback
+            onPress={() => navigation.navigate("UserScreen", {userId: user.id})}
           >
-            <Text style={{ ...theme.text, ...theme.boldText }}>
-              {user.account_name}
-            </Text>
-            <Moment
-              locale={localization.locale || "ru"}
-              element={Text}
-              style={{ ...theme.text, fontSize: 13, color: "gray" }}
-              fromNow
-            >
-              {createdAt}
-            </Moment>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
+            <View style={styles.userInfo}>
+                <ProfilePhoto
+                  profilePhoto={user.profile_photo ? getPhoto(user.profile_photo): undefined}
+                  width={40}
+                  height={40}
+                />
+                <View
+                  style={{
+                    ...styles.userName,
+                    flexDirection: "column",
+                  }}
+                >
+                  <Text style={{ ...theme.text, ...theme.boldText }}>
+                    {user.account_name}
+                  </Text>
+                  <Moment
+                    locale={localization.locale || "ru"}
+                    element={Text}
+                    style={{ ...theme.text, fontSize: 13, color: "gray" }}
+                    fromNow
+                  >
+                    {createdAt}
+                  </Moment>
+                </View>
+              </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={()=>setVisible(true)}>
+            <Icon fill='#333' name="more-vertical" style={{width: 25, height: 25}} />
+          </TouchableWithoutFeedback>
+        </Layout>
 
       {/* Slider */}
 
@@ -219,5 +273,38 @@ export default ({
         </View>
       </View>
     </Layout>
+    <View>
+      <Modal
+        visible={visible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => setVisible(false)}>
+        <Layout style={{borderRadius: 150}}>
+          <List
+            style={{width: 350, marginHorizontal: 0}}
+            data={auth.user.id === user.id ? ownerItems : defaultItems}
+            ItemSeparatorComponent={Divider}
+            renderItem={renderModalItem}
+          />
+        </Layout>
+      </Modal>
+    </View>
+    </>
   );
 };
+
+const mapStateToProps = (state: { userReducer: any }) => {
+  const {auth} = state.userReducer;
+  return {
+    auth,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  const { removePost } = bindActionCreators(actions, dispatch);
+
+  return {
+    removePost
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

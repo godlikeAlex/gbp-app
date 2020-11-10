@@ -7,3 +7,8 @@ export { default as ConfirmEmail } from "./ConfirmEmail";
 export { default as Comments } from "./Comments";
 export { default as Follows } from "./Follows";
 export { default as Feed } from "./Feed";
+export { default as Settings } from "./Settings";
+export { default as UsersByCategory } from "./UsersByCategory";
+export { default as SearchScreen } from "./SearchScreen";
+export { default as DirectScreen } from "./DirectScreen";
+export { default as MessageScreen } from "./MessageScreen";

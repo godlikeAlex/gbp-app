@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Layout } from "@ui-kitten/components";
-import { ScrollView, TouchableHighlight, View, Image, Dimensions, RefreshControl, StyleSheet, BackHandler } from "react-native";
+import { Icon, Layout, Text } from "@ui-kitten/components";
+import { ScrollView, TouchableHighlight, View, Image, Dimensions, RefreshControl, StyleSheet, BackHandler, ActivityIndicator } from "react-native";
 import { getPhoto, getProfilePosts } from "../../../core/api";
 import LoadingSpinner from "../LoadingSpinner";
 import ProfileInfo from "../ProfileInfo";
@@ -12,6 +12,7 @@ import FeedProfilePosts from "../FeedProfilePosts";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import localization from '../../../services/localization';
 
 const {width, height} = Dimensions.get('window');
 
@@ -39,20 +40,39 @@ interface ProfileProps {
   posts: any;
   loadMorePosts: (payload: any) => void
   navigation: any;
+  initPosts: (payload: any) => void;
 }
 
-const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts, loadMorePosts, navigation }: ProfileProps) => {
+const Profile = ({ profileInfo, buttons, refreshing, onRefresh, initPosts, posts: allPosts, loadMorePosts, navigation }: ProfileProps) => {
   const ref = useRef<TransitioningView>();
   const posts = allPosts[profileInfo.id] || {};
   const postItems = posts.data || [];
   const [state, setState] = useState({
     limit: 9,
     page: 1,
-    size: postItems.length
+    size: 0,
+    postsIsLoading: true
   });
+
   const [detailsPosts, setDetailsPosts] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  useEffect(() => setState({limit: 9, page: 1, size: postItems.length}), []);
+  const [loadingMore, setLoadingMore] = useState(true);
+  const [dataIsLoading, setDataIsLoading] = useState(false);
+  useEffect(() => {
+    getProfilePosts(profileInfo.id, {page: 1}).then((data) => {
+      if (!data.error) {
+        const {posts, size} = data;
+        initPosts({id: profileInfo.id, posts, initialLoading: false});  
+        setState({limit: 9, page: 1, size, postsIsLoading: false})
+      }
+    });
+  }, []);
+  useEffect(() => {
+    if (state.limit === state.size) {
+      setLoadingMore(true)
+    } else {
+      setLoadingMore(false)
+    }
+  }, [state])
 
   useFocusEffect(
     React.useCallback(() => {
@@ -74,7 +94,7 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
   );
 
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}: any) => {
-    const paddingToBottom =   100;
+    const paddingToBottom = 100;
     return layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom;
   };
@@ -89,22 +109,27 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
   };
 
   const loadMore = () => {
-    if (!loadingMore) {
+    if(!dataIsLoading) {
+      console.log(state.limit === state.size);
+      console.log(state);
       if (state.limit === state.size) {
         setLoadingMore(true);
-        loadMoreData().then(() => setLoadingMore(false));
+        setDataIsLoading(true);
+        loadMoreData().then(() => {
+          setDataIsLoading(false);
+          setLoadingMore(false);
+        });
       }
     }
   }
 
   const loadMoreData = () => {
-    console.log('opa4ki');
-
     return new Promise(resolve => {
       getProfilePosts(profileInfo.id, {page: Number(state.page) + 1}).then((data) => {
         if (!data.error) {
           const {posts, limit, page, size} = data;
           setState({
+            ...state,
             page,
             limit,
             size
@@ -176,16 +201,24 @@ const Profile = ({ profileInfo, buttons, refreshing, onRefresh, posts: allPosts,
         scrollEventThrottle={2}
       >
         <ProfileInfo profile={profileInfo} buttons={buttons} />
-        {posts.initialLoading === undefined ? (<Layout style={{flex: 1, borderTopColor: '#e1e1e1', borderTopWidth: 1}} level='2'>
+        {state.postsIsLoading ? (<Layout style={{flex: 1, borderTopColor: '#e1e1e1', borderTopWidth: 1}} level='2'>
           <LoadingSpinner />
         </Layout>): (
-        <Layout style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-            {postItems.map(postItem)}
-          </Layout>
+          postItems.length > 0 ? (
+            <Layout style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+              {postItems.map(postItem)}
+            </Layout>
+          ) : (
+            <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}} level="3">
+              <Icon name="camera-outline" style={{width: 50, height: 50}} fill="#333" />
+              <Text style={{fontSize: 18}}>{localization.t('noPostsYet')}</Text>
+            </Layout>
+          )
         )}
         {loadingMore && (
           <Layout>
-            <LoadingSpinner />
+            {/* <LoadingSpinner /> */}
+            <ActivityIndicator />
           </Layout>
         )}
       </ScrollView>
@@ -202,10 +235,11 @@ const mapStateToProps = (state: { userReducer: any }) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => {
-  const { loadMorePosts } = bindActionCreators(actions, dispatch);
+  const { loadMorePosts, initPosts } = bindActionCreators(actions, dispatch);
 
   return {
-    loadMorePosts
+    loadMorePosts,
+    initPosts
   };
 };
 

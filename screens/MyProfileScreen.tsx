@@ -14,6 +14,7 @@ import LoadingSpinner from "../src/components/LoadingSpinner";
 import { bindActionCreators } from "redux";
 import * as actions from "../redux/actions";
 import AsyncStorage from "@react-native-community/async-storage";
+import localization from '../services/localization';
 
 const MenuIcon = (props: any) => <Icon {...props} name="more-vertical" />;
 
@@ -42,7 +43,7 @@ const UserScreen = ({
   };
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const EditProfileButton = () => (<Button onPress={() => true}>Edit profile</Button>)
+  const EditProfileButton = () => (<Button onPress={() => navigation.navigate('Settings')}>Edit profile</Button>)
 
   useEffect(() => {
     initProfileData();
@@ -64,13 +65,6 @@ const UserScreen = ({
         });
         setLoading(false);
         setRefreshing(false);
-      }
-    });
-
-    getProfilePosts(auth.user.id, {page: 1}).then((data) => {
-      if (!data.error) {
-        const {posts} = data;
-        initPosts({id: auth.user.id, posts, initialLoading: false});
       }
     });
   }
@@ -99,7 +93,7 @@ const UserScreen = ({
       >
         <MenuItem
           accessoryLeft={LogoutIcon}
-          title="Logout"
+          title={localization.t('logout')}
           onPress={logOutHandle}
         />
       </OverflowMenu>

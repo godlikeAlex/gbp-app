@@ -18,3 +18,53 @@ export const TOGGLE_FOLLOW_GLOBAL = 'TOGGLE_FOLLOW_GLOBAL';
 export const INIT_POSTS = 'INIT_POSTS';
 export const LOAD_MORE_POSTS = 'LOAD_MORE_POSTS';
 
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+
+export const REMOVE_POST = 'REMOVE_POST';
+
+
+// Mesanger 
+export const INIT_CONTACTS = 'INIT_CONTACTS';
+export const SELECT_CONTACT = 'SELECT_CONTACT';
+export const INIT_MESSAGES = 'INIT_MESSAGES';
+export const ADD_NEW_MESSAGE = 'ADD_NEW_MESSAGE';
+export const UPDATE_BADGE_IN_DIRECT = 'UPDATE_BADGE_IN_DIRECT';
+export const ANULL_BADGE_IN_DIRECT = 'ANULL_BADGE_IN_DIRECT';
+export const MARK_MY_MESSAGES_AS_READ = 'MARK_MY_MESSAGES_AS_READ';
+export const UPDATE_ONSLINE_SELECTED_CONTACT = 'UPDATE_ONSLINE_SELECTED_CONTACT';
+export const UPDATE_ONSLINE_CONTACT_STATUS = 'UPDATE_ONSLINE_CONTACT_STATUS';
+export const ADD_NEW_CHAT = 'ADD_NEW_CHAT';
+export const INIT_COUNTER = 'INIT_COUNTER';
+export const LOAD_MORE_MESSAGES = 'LOAD_MORE_MESSAGES';
+
+export interface ChatContact {
+  id: number;
+  isOnline: boolean;
+  user: {
+    account_name: string,
+    id: number,
+    name: string,
+    profile_photo?: string,
+  };
+  userOne: number;
+  userTwo: number;
+  unread: number;
+}
+
+export interface Message {
+  chatId: number;
+  createdAt: number;
+  from: number;
+  id: number;
+  read: boolean | null;
+  text: string;
+  to: number;
+  updatedAt: string;
+}
+
+export interface MessangerState {
+  selectedContact: ChatContact | null;
+  counterMessages: number;
+  contacts: ChatContact[];
+  messages: Message[];
+}

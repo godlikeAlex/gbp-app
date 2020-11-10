@@ -39,6 +39,20 @@ i18n.translations = {
     followings: "Followings",
     follow: "Follow",
     following: "Following",
+    search: 'Search...',
+    searching: 'Searching...',
+    logout: 'logout',
+    removepost: 'Remove post',
+    removecomment: 'Remove comment',
+    copypost: 'Copy post',
+    errors: {
+      account_name_should_unique: 'Account name allready taken.',
+      valid_email: 'Invalid email',
+      password_must_be_gretter_than_7: "Password must be more than 7 characters"
+    },
+    message: "Message...",
+    sendMsg: 'Send message',
+    noPostsYet: 'No posts yet'
   },
   ru: { email: "Почта" },
 };

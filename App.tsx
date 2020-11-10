@@ -4,13 +4,15 @@ import { StyleSheet, View } from "react-native";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { NavigationContainer } from "@react-navigation/native";
-import TabNavigator from "./navigation/TabNavigator";
+// import TabNavigator from "./navigation/TabNavigator";
+import AppNavigator from "./navigation/AppNavigator";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { AppLoading } from "expo";
 import { useFonts } from "expo-font";
 
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import Application from "./src/components/Application";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -27,9 +29,7 @@ export default function App() {
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
           <Provider {...{ store }}>
-            <NavigationContainer>
-              <TabNavigator />
-            </NavigationContainer>
+            <Application />
           </Provider>
         </ApplicationProvider>
       </>

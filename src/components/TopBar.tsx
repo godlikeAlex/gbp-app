@@ -25,7 +25,7 @@ const BackAction = ({onBackAction}: {onBackAction: () => void}) => {
 };
 
 interface TopBarProps {
-  title?: string;
+  title?: string | any;
   accessoryRight?: any;
   style?: StyleProp<ViewStyle>;
   onBackAction?: () => void;

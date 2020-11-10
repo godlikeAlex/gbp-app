@@ -5,6 +5,7 @@ import { theme, StyleGuide } from "../StyleGuide";
 import localization from "../../../services/localization";
 import ProfilePhoto from "../ProfilePhoto";
 import { useNavigation } from "@react-navigation/native";
+import { getPhoto } from "../../../core/api";
 
 interface ProfileInfoProps {
   profile: {
@@ -32,8 +33,8 @@ const ProfileInfo = ({ profile, buttons }: ProfileInfoProps) => {
   } = profile;
 
   return (
-    <Layout style={{ ...theme.center, paddingBottom: 15 }} level="2">
-      <ProfilePhoto profilePhoto={profile_photo} width={100} height={100} />
+    <Layout style={{ ...theme.center, paddingBottom: 15, paddingTop: 15 }} level="2">
+      <ProfilePhoto profilePhoto={profile_photo ? getPhoto(profile_photo): undefined} width={100} height={100} />
       <Text style={theme.boldText} category="h4">
         {name}
       </Text>

@@ -6,6 +6,7 @@ import {
   UserScreen,
   MyProfileScreen,
   Follows,
+  Settings,
 } from "../screens";
 
 export type RootStackParamList = {

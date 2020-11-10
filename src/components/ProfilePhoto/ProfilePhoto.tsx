@@ -1,6 +1,6 @@
 import { Avatar } from "@ui-kitten/components";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import BlankUserImage from "../assets/blank-user.jpg";
 
 const styles = StyleSheet.create({
@@ -13,21 +13,28 @@ interface ProfilePhotoProps {
   profilePhoto?: string;
   width: number;
   height: number;
+  onlineBadge?: boolean;
 }
 
-const ProfilePhoto = ({ profilePhoto, width, height }: ProfilePhotoProps) => {
+const ProfilePhoto = ({ profilePhoto, width, height, onlineBadge }: ProfilePhotoProps) => {
   return (
-    <Avatar
-      style={{ width, height }}
-      source={
-        !profilePhoto
-          ? BlankUserImage
-          : {
-              uri:
-                "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/d9/d94c7fea789b35eace67cc49c6f2580a7a260742_full.jpg",
-            }
-      }
-    />
+    <View>
+      <Avatar
+        style={{ width, height }}
+        source={
+          !profilePhoto
+            ? BlankUserImage
+            : {
+                uri: profilePhoto,
+              }
+        }
+      />
+      {onlineBadge && (
+        <View
+          style={{width: 20, height: 20, backgroundColor: '#1ae113', borderRadius: 20, right: 0, bottom: 0, position: 'absolute', borderWidth: 3, borderColor: 'white'}}
+        />
+      )}
+    </View>
   );
 };
 

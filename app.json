@@ -26,6 +26,9 @@
         "svg"
       ]
     },
+    "permissions": [
+      ["android:requestLegacyExternalStorage", true]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },

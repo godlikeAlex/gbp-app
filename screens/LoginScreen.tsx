@@ -45,6 +45,7 @@ const LoginScreen = ({ login, user }: LoginProps) => {
 
   const handleChange = (name: string, value: string) => {
     setInputData({ ...inputData, [name]: value });
+    setDisabled(false);
   };
 
   const handleSignIn = async () => {
@@ -61,6 +62,13 @@ const LoginScreen = ({ login, user }: LoginProps) => {
         ...inputData,
         uniqueId: Constants.installationId,
       });
+
+      if (data.errors) {
+        setError(localization.t(`errors.${data.errors[0].msg}`));
+        setDisabled(false);
+        setLoading(false);
+      }
+
       if (data.err) {
         setDisabled(false);
         setLoading(false);

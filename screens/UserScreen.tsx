@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import TopBar from "../src/components/TopBar";
 import { Profile } from "../src/components";
-import { follow, getProfilePosts, getProfile, unfollow } from "../core/api";
+import { follow, getProfilePosts, getProfile, unfollow, getChat } from "../core/api";
 import LoadingSpinner from "../src/components/LoadingSpinner";
 import { bindActionCreators } from "redux";
 import * as actions from "../redux/actions";
 import { RootStackParamList } from "../navigation/ProfileNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp } from "@react-navigation/native";
-import { Text } from "react-native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+import { Text, View } from "react-native";
 import { Button } from "@ui-kitten/components";
 import localization from "../services/localization";
 
@@ -32,15 +32,15 @@ interface UserScreenProps {
   navigation: UserScreenNavigationProp;
   route: UserScreenRouteProp;
   initPosts: (payload: any) => void;
+  selectContact: (payload: {contact: any}) => void;
 }
 
-const UserScreen = ({ auth, route, addUser, users, toggleFollowToUser, decFollows, incFollows, toggleFollow, toggleFollowing, initPosts }: UserScreenProps) => {
+const UserScreen = ({ auth, route, selectContact, addUser, users, toggleFollowToUser, decFollows, incFollows, toggleFollow, toggleFollowing, initPosts }: UserScreenProps) => {
   const { userId } = route.params;
   const user = users.find((user) => user.id === userId);
-
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
-  const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const toggleFollows = () => {
@@ -57,11 +57,40 @@ const UserScreen = ({ auth, route, addUser, users, toggleFollowToUser, decFollow
     }
   };
 
+  const sendMessage = async () => {
+    const {chat} = await getChat(userId);
+    if (chat) {
+      selectContact({contact: chat});
+      navigation.navigate('Messages');
+    } else {
+      selectContact({contact: {userOne: auth.user.id, userTwo: user.id, user}});
+      navigation.navigate('Messages', {isNewChat: true});
+    }
+  }
+
   const FollowButton = () => {
     return (
-      user && <Button  appearance={user.canSubscribe ? "filled" : "outline"} onPress={toggleFollows}>{localization.t(user.canSubscribe ? "follow" : "following")}</Button>
+      <Button style={{marginLeft: 15}} size='small' appearance={user.canSubscribe ? "filled" : "outline"} onPress={toggleFollows}>{localization.t(user.canSubscribe ? "follow" : "following")}</Button>
     )
   }
+
+  const MessageButton = () => {
+    return (
+      <Button style={{marginLeft: 15}} size='small' onPress={sendMessage}>{localization.t("sendMsg")}</Button>
+    )
+  }
+
+  const UserProfileButtons = () => (
+    user && <View style={{flexDirection: 'row'}}>
+      <FollowButton />
+      <MessageButton />
+    </View>
+  )
+
+  const EditProfileButton = () => (<Button onPress={() => navigation.navigate('Settings')}>Edit profile</Button>)
+
+
+  const buttons = [userId === auth.user.id ? <EditProfileButton /> : <UserProfileButtons />];
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -90,13 +119,6 @@ const UserScreen = ({ auth, route, addUser, users, toggleFollowToUser, decFollow
         setRefreshing(false);
       }
     });
-
-    getProfilePosts(userId, {page: 1}).then((data) => {
-      if (!data.error) {
-        const {posts} = data;
-        initPosts({id: userId, posts, initialLoading: false});
-      }
-    });
   }
 
   return (
@@ -105,8 +127,8 @@ const UserScreen = ({ auth, route, addUser, users, toggleFollowToUser, decFollow
         <LoadingSpinner />
       ) : (
         <>
-          <TopBar title={user.account_name} />
-          <Profile profileInfo={user} buttons={[<FollowButton />]} posts={posts} loadingPosts={loadingPosts} refreshing={refreshing} onRefresh={onRefresh} />
+          <TopBar title={user.account_name || ''} />
+          <Profile profileInfo={user} buttons={buttons} refreshing={refreshing} onRefresh={onRefresh} navigation={navigation} />
         </>
       )}
     </>
@@ -121,7 +143,7 @@ const mapStateToProps = (state: { userReducer: any }) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => {
-  const { logOut, addUser, initPosts, toggleFollow, toggleFollowToUser, decFollows, incFollows, toggleFollowing } = bindActionCreators(actions, dispatch);
+  const { logOut, addUser, selectContact, initPosts, toggleFollow, toggleFollowToUser, decFollows, incFollows, toggleFollowing } = bindActionCreators(actions, dispatch);
 
   return {
     logOut,
@@ -131,7 +153,8 @@ const mapDispatchToProps = (dispatch: any) => {
     decFollows,
     incFollows,
     toggleFollowing,
-    initPosts
+    initPosts,
+    selectContact
   };
 };
 

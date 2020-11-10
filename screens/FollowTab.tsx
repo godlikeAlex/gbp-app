@@ -1,8 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { Button, Layout, Text } from "@ui-kitten/components";
-import React from "react";
+import React, { useCallback } from "react";
 import { FlatList, StyleSheet, TouchableHighlight, View } from "react-native";
-import { getFollowers, unfollow, getFollowings, follow } from "../core/api";
+import { getFollowers, unfollow, getFollowings, follow, getPhoto } from "../core/api";
 import { ProfilePhoto } from "../src/components";
 import { StyleGuide } from "../src/components/StyleGuide";
 import localization from "../services/localization";
@@ -103,7 +103,7 @@ const FollowTab = ({
     return (
       <View>
         <TouchableHighlight
-          onPress={() => navigation.navigate(auth.id !== item.id  ? "UserScreen" : "MyProfile", { userId: item.id })}
+          onPress={() => navigation.push(auth.id !== item.id  ? "UserScreen" : "UserScreen", { userId: item.id })}
         >
           <Layout
             style={{
@@ -118,7 +118,7 @@ const FollowTab = ({
             <ProfilePhoto
               width={55}
               height={55}
-              profilePhoto={item.profile_photo}
+              profilePhoto={item.profile_photo && getPhoto(item.profile_photo)}
             />
             <Layout
               style={{
@@ -155,6 +155,9 @@ const FollowTab = ({
     );
   };
 
+  const keyExtractor = useCallback((item: any) => item.id.toString(), []);
+
+
   return (
     <Layout style={{ flex: 1 }}>
       {loading ? (
@@ -163,7 +166,7 @@ const FollowTab = ({
         <FlatList
           data={type === "followers" ? followers[userId] : followings[userId]}
           renderItem={renderItem}
-          keyExtractor={(item: any) => item.id}
+          keyExtractor={keyExtractor}
         />
       )}
     </Layout>
@@ -172,8 +175,9 @@ const FollowTab = ({
 
 const mapStateToProps = (state: { userReducer: any; follows: any }) => {
   const { followers, followings } = state.follows;
+
   return {
-    auth: state.userReducer.myProfile,
+    auth: state.userReducer.auth.user,
     followers,
     followings,
   };

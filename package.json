@@ -23,7 +23,9 @@
     "expo-asset": "~8.1.7",
     "expo-constants": "~9.1.1",
     "expo-font": "^8.2.2",
+    "expo-image-picker": "~8.3.0",
     "expo-localization": "~8.2.1",
+    "expo-media-library": "~8.2.1",
     "expo-status-bar": "^1.0.2",
     "i18n-js": "^3.7.1",
     "moment": "^2.29.0",
@@ -35,6 +37,7 @@
     "react-native-confirmation-code-field": "^6.5.0",
     "react-native-device-info": "^6.0.3",
     "react-native-gesture-handler": "~1.6.0",
+    "react-native-image-crop-picker": "^0.35.1",
     "react-native-largelist-v3": "^3.0.15",
     "react-native-reanimated": "~1.9.0",
     "react-native-safe-area-context": "~3.0.7",
@@ -45,7 +48,8 @@
     "react-native-web": "~0.11.7",
     "react-redux": "^7.2.1",
     "recyclerlistview": "^3.0.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "socket.io-client": "^2.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

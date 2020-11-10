@@ -10,7 +10,9 @@ import {
   INIT_PROFILE,
   TOGGLE_FOLLOW_GLOBAL,
   INIT_POSTS,
-  LOAD_MORE_POSTS
+  LOAD_MORE_POSTS,
+  UPDATE_PROFILE,
+  REMOVE_POST
 } from "./../types";
 
 const initialState = {
@@ -54,6 +56,15 @@ const user = (state = initialState, action: any) => {
       return {
         ...state,
         myProfile: action.payload,
+      };
+    }
+    case UPDATE_PROFILE: {
+      return {
+        ...state,
+        myProfile: {
+          ...state.myProfile,
+          ...action.payload
+        },
       };
     }
     case INCREMENT_FOLLOWERS:
@@ -136,6 +147,16 @@ const user = (state = initialState, action: any) => {
             ...state.posts[action.payload.id].data,
             ...action.payload.posts
           ]
+        }
+      }
+    }
+    case REMOVE_POST: return {
+      ...state,
+      posts: {
+        ...state.posts,
+        [action.payload.userId]: {
+          ...state.posts[action.payload.userId],
+          data: state.posts[action.payload.userId].data.filter((post: any) => post.id !== action.payload.postId)
         }
       }
     }

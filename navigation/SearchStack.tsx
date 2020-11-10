@@ -2,10 +2,10 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 // import {} from "../screens";
 import { Text } from "react-native";
-import { Feed, Follows, Settings, ShowPost, UserScreen, Comments, UsersByCategory } from "../screens";
+import { Follows, ShowPost, UserScreen, Comments, UsersByCategory, SearchScreen } from "../screens";
 
-export type MainStackParamList = {
-  Home: {};
+export type SearchStackParamList = {
+  SearchStack: {};
   UserScreen: {};
   Follows: {};
   ShowPost: {};
@@ -16,14 +16,14 @@ export type MainStackParamList = {
   };
 };
 
-const Stack = createStackNavigator<MainStackParamList>();
+const Stack = createStackNavigator<SearchStackParamList>();
 
-const MainStack = () => {
+const SearchStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
-        component={Feed}
+        name="SearchStack"
+        component={SearchScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -55,4 +55,4 @@ const MainStack = () => {
   );
 };
 
-export default MainStack;
+export default SearchStack;

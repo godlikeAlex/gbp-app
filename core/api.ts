@@ -4,9 +4,10 @@ import store from "../redux/store";
 import { LOG_OUT } from "../redux/types";
 import Constants from "expo-constants";
 import querystring from "query-string";
+import { authSocket } from "./socket";
 
 export const signIn = (data: any) => {
-  return fetch("http://192.168.0.103:8888/api/v1/auth/sign-in", {
+  return fetch("http://192.168.0.102:8888/api/v1/auth/sign-in", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -23,7 +24,7 @@ export const signIn = (data: any) => {
 };
 
 export const signUp = (data: any) => {
-  return fetch("http://192.168.0.103:8888/api/v1/auth/sign-up", {
+  return fetch("http://192.168.0.102:8888/api/v1/auth/sign-up", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -40,7 +41,7 @@ export const signUp = (data: any) => {
 };
 
 export const activateAccount = (data: any) => {
-  return fetch("http://192.168.0.103:8888/api/v1/auth/activate-account", {
+  return fetch("http://192.168.0.102:8888/api/v1/auth/activate-account", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -57,7 +58,7 @@ export const activateAccount = (data: any) => {
 };
 
 export const refreshToken = (refreshToken: string, uniqueId: any) => {
-  return fetch("http://192.168.0.103:8888/api/v1/auth/refresh-token", {
+  return fetch("http://192.168.0.102:8888/api/v1/auth/refresh-token", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -98,6 +99,7 @@ const fetchWithAuth = async (url: string, options: any) => {
           }
 
           options.headers.Authorization = `Bearer ${data.token}`;
+          authSocket(data.token);
           await AsyncStorage.setItem("auth", JSON.stringify(data));
           store.dispatch(updateTokens(data));
           return await fetch(url, options);
@@ -120,7 +122,7 @@ const fetchWithAuth = async (url: string, options: any) => {
 };
 
 export const getProfile = (id: number) => {
-  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/user/show/${id}`, {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/user/show/${id}`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -140,7 +142,7 @@ export const getProfilePosts = (id: number, data: {page: number}) => {
   const params = querystring.stringify(data);
 
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/account/posts/preview/${id}?${params}`,
+    `http://192.168.0.102:8000/api/v1/account/posts/preview/${id}?${params}`,
     {
       method: "GET",
       headers: {
@@ -158,11 +160,11 @@ export const getProfilePosts = (id: number, data: {page: number}) => {
 };
 
 export const getPhoto = (uri: string) => {
-  return `http://192.168.0.103:8000/${uri}`;
+  return `http://192.168.0.102:8000/${uri}`;
 };
 
 export const getPost = (id: any) => {
-  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/post/show/${id}`, {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/post/show/${id}`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -180,8 +182,8 @@ export const getPost = (id: any) => {
 export const toggleLike = (id: any, type: string = "post") => {
   return fetchWithAuth(
     type === "post"
-      ? `http://192.168.0.103:8000/api/v1/post/toggle/like/${id}`
-      : `http://192.168.0.103:8000/api/v1/post/comment/toggle/like/${id}`,
+      ? `http://192.168.0.102:8000/api/v1/post/toggle/like/${id}`
+      : `http://192.168.0.102:8000/api/v1/post/comment/toggle/like/${id}`,
     {
       method: "POST",
       headers: {
@@ -202,7 +204,7 @@ export const getComments = (id: number | string, data: { page?: number }) => {
   const params = querystring.stringify(data);
 
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/post/show/comments/${id}?${params}`,
+    `http://192.168.0.102:8000/api/v1/post/show/comments/${id}?${params}`,
     {
       method: "GET",
       headers: {
@@ -221,7 +223,7 @@ export const getComments = (id: number | string, data: { page?: number }) => {
 
 export const createComment = (id: string | number, comment: string) => {
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/post/comment/${id}/create`,
+    `http://192.168.0.102:8000/api/v1/post/comment/${id}/create`,
     {
       method: "POST",
       headers: {
@@ -243,7 +245,7 @@ export const getFollowers = (id: any, data: { page: number }) => {
   const params = querystring.stringify(data);
 
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/user/followers/${id}?${params}`,
+    `http://192.168.0.102:8000/api/v1/user/followers/${id}?${params}`,
     {
       method: "GET",
       headers: {
@@ -264,7 +266,7 @@ export const getFollowings = (id: any, data: { page: number }) => {
   const params = querystring.stringify(data);
 
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/user/followings/${id}?${params}`,
+    `http://192.168.0.102:8000/api/v1/user/followings/${id}?${params}`,
     {
       method: "GET",
       headers: {
@@ -282,7 +284,7 @@ export const getFollowings = (id: any, data: { page: number }) => {
 };
 
 export const unfollow = (userId: string | number) => {
-  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/user/unfollow`, {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/user/unfollow`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -299,7 +301,7 @@ export const unfollow = (userId: string | number) => {
 };
 
 export const follow = (userId: string | number) => {
-  return fetchWithAuth(`http://192.168.0.103:8000/api/v1/user/follow`, {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/user/follow`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -319,7 +321,7 @@ export const getMyFeed = (data: { page: number }) => {
   const params = querystring.stringify(data);
 
   return fetchWithAuth(
-    `http://192.168.0.103:8000/api/v1/feed/?${params}`,
+    `http://192.168.0.102:8000/api/v1/feed/?${params}`,
     {
       method: "GET",
       headers: {
@@ -328,6 +330,208 @@ export const getMyFeed = (data: { page: number }) => {
       },
     }
   )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const updateMyProfile = (body: any) => {
+  return fetchWithAuth(
+    `http://192.168.0.102:8000/api/v1/user/update`,
+    {
+      method: "PUT",
+      headers: {
+        Accept: "*/*",
+        "Content-type": "multipart/form-data",
+      },
+      body: body
+    }
+  )
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const removePost = (postId: string | number) => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/post/${postId}/remove`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const removeComment = (commentId: string | number) => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/post/comment/${commentId}/remove`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getCategories = (lang: string = 'en') => {
+  return fetch(`http://192.168.0.102:8000/api/v1/categories/${lang}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getUsersByCategory = (id: string | number, data: {page: number}) => {
+  const params = querystring.stringify(data);
+
+  return fetch(`http://192.168.0.102:8000/api/v1/categories/${id}/users?${params}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const searchUsers = (data: {page: number, term: string}) => {
+  const params = querystring.stringify(data);
+
+  return fetch(`http://192.168.0.102:8000/api/v1/search?${params}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const sendMessage = (chatId: number, to: number, text: string) => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/messages/send`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ chatId, to, text }),
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getChats = () => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/messages/chats`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    }
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getChat = (userId: number) => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/messages/chat/find/${userId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    }
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const getMessages = (chatId: number, page: number) => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/messages/chat/${chatId}?page=${page}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    }
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const createChat = (userId: number, text: string) => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/messages/chat/create/${userId}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ text }),
+  })
+    .then((data: any) => {
+      return data.json();
+    })
+    .catch((e) => {
+      return e;
+    });
+};
+
+export const countMessages = () => {
+  return fetchWithAuth(`http://192.168.0.102:8000/api/v1/messages/chat/unreaded/count`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    }
+  })
     .then((data: any) => {
       return data.json();
     })

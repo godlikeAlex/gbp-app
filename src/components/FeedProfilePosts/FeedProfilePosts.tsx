@@ -14,10 +14,11 @@ interface FeedProfilePostsProps {
   withScrollTo?: boolean;
   loadMoreData: () => void;
   hasNextPage: boolean;
+  renderHeader?: React.FC
 }
 
-const FeedProfilePosts = ({posts, recyclerRef, withScrollTo, loadMoreData, hasNextPage}: FeedProfilePostsProps) => {
-  const [loading, setLoading] = React.useState(false);
+const FeedProfilePosts = ({posts, recyclerRef, renderHeader, withScrollTo, loadMoreData, hasNextPage}: FeedProfilePostsProps) => {
+  const [showLoadMore, setShowLoadMore] = React.useState(true);
   const _renderRow = useCallback(({item}: any) => (
     <Post {...item} />
   ), []);
@@ -40,17 +41,17 @@ const FeedProfilePosts = ({posts, recyclerRef, withScrollTo, loadMoreData, hasNe
   // const data = dataProvider.cloneWithRows(posts);
 
   const renderFooter = () => (
-    loading ? <View><ActivityIndicator size='large' /></View> : null
+    showLoadMore ? <View><ActivityIndicator size='large' /></View> : null
   );
 
   const onEndReached = () => {
-    if(!loading) {
-      if(hasNextPage) {
-        setLoading(true);
-        loadMoreData().then(() => {
-          setLoading(false);
-        })
-      }
+    if(hasNextPage) {
+      setShowLoadMore(true)
+      loadMoreData().then(() => {
+        setShowLoadMore(true);
+      })
+    } else {
+      setShowLoadMore(false);
     }
   }
 
@@ -77,6 +78,7 @@ const FeedProfilePosts = ({posts, recyclerRef, withScrollTo, loadMoreData, hasNe
         onEndReachedThreshold={2}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={renderFooter}
+        ListHeaderComponent={renderHeader}
         initialNumToRender={2}
       />
     ) : null
